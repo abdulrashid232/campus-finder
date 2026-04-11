@@ -116,7 +116,7 @@ export default function MapView() {
           )}
 
           <a
-            href={`https://www.google.com/maps/dir/?api=1&destination=${selectedBuilding.latitude},${selectedBuilding.longitude}`}
+            href={userLoc ? `https://www.google.com/maps/dir/?api=1&origin=${userLoc.lat},${userLoc.lng}&destination=${selectedBuilding.latitude},${selectedBuilding.longitude}` : `https://www.google.com/maps/dir/?api=1&destination=${selectedBuilding.latitude},${selectedBuilding.longitude}`}
             target="_blank"
             rel="noreferrer"
             className="w-full mt-3 flex items-center justify-center gap-2 text-sm font-bold text-white bg-brand-500 hover:bg-brand-600 py-3 rounded-xl transition-all shadow-md shadow-brand-500/20 active:scale-95"
