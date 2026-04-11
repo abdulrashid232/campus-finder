@@ -82,16 +82,30 @@ export default function Dashboard() {
             {isSearching ? (
               <div className="p-6 text-center text-slate-500">Searching...</div>
             ) : searchResults?.length > 0 ? (
-              <ul className="divide-y divide-slate-100">
-                {searchResults.map((course: any) => (
-                  <li key={course.id} className="p-4 hover:bg-slate-50 flex items-center justify-between transition-colors">
+              <ul className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
+                {searchResults.map((result: any) => (
+                  <li 
+                    key={result.id} 
+                    onClick={() => {
+                      if (result.target) {
+                        navigate(`/map?target=${result.target}`);
+                      } else {
+                        navigate(`/timetable`);
+                      }
+                    }}
+                    className="p-4 hover:bg-slate-50 flex items-center justify-between transition-colors cursor-pointer group"
+                  >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500">
-                        <BookOpen size={20} />
+                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                          result.type === 'course' ? 'bg-indigo-50 text-indigo-500' :
+                          result.type === 'building' ? 'bg-emerald-50 text-emerald-500' :
+                          'bg-amber-50 text-amber-500'
+                      }`}>
+                        {result.type === 'course' ? <BookOpen size={20} /> : result.type === 'building' ? <MapPin size={20} /> : <Navigation size={20} />}
                       </div>
                       <div>
-                        <div className="font-bold text-slate-900">{course.course_code}</div>
-                        <div className="text-sm text-slate-500">{course.name}</div>
+                        <div className="font-bold text-slate-900 group-hover:text-brand-600 transition-colors">{result.title}</div>
+                        <div className="text-sm text-slate-500">{result.subtitle}</div>
                       </div>
                     </div>
                   </li>
