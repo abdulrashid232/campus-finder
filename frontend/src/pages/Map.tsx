@@ -115,6 +115,16 @@ export default function MapView() {
             </div>
           )}
 
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${selectedBuilding.latitude},${selectedBuilding.longitude}`}
+            target="_blank"
+            rel="noreferrer"
+            className="w-full mt-3 flex items-center justify-center gap-2 text-sm font-bold text-white bg-brand-500 hover:bg-brand-600 py-3 rounded-xl transition-all shadow-md shadow-brand-500/20 active:scale-95"
+          >
+            <Navigation size={18} />
+            Open in Google Maps
+          </a>
+
           <button 
             onClick={() => { setSelectedBuilding(null); setDirections(null); }}
             className="w-full mt-4 text-center text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 py-2 rounded-lg transition-colors"

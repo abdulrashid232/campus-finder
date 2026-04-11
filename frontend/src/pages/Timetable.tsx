@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import apiClient from '../api/client';
-import { Plus, Trash2, MapPin } from 'lucide-react';
+import { Plus, Trash2, MapPin, Navigation } from 'lucide-react';
 import AddClassModal from '../components/AddClassModal';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export default function Timetable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: timetable, isLoading } = useQuery({
     queryKey: ['timetable'],
@@ -73,9 +75,17 @@ export default function Timetable() {
                   <div className="text-slate-500 text-sm truncate">{entry.course_detail.name}</div>
                   
                   {entry.room_detail && (
-                    <div className="mt-4 pt-4 border-t border-slate-50 flex items-center gap-2 text-sm text-slate-600 font-medium bg-slate-50 p-2 rounded-lg -mx-2 -mb-2">
-                      <MapPin size={16} className="text-brand-400" />
-                      {entry.room_detail.building.code} {entry.room_detail.room_number}
+                    <div className="mt-4 pt-4 border-t border-slate-50">
+                      <button 
+                        onClick={() => navigate(`/map?target=${entry.room_detail.building.code}`)}
+                        className="w-full flex items-center justify-between gap-2 text-sm text-slate-600 hover:text-brand-600 hover:bg-brand-50 font-medium bg-slate-50 p-2 rounded-lg transition-colors group/btn"
+                      >
+                       <div className="flex items-center gap-2">
+                        <MapPin size={16} className="text-brand-400 group-hover/btn:text-brand-600" />
+                        {entry.room_detail.building.code} {entry.room_detail.room_number}
+                       </div>
+                       <Navigation size={14} className="opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                      </button>
                     </div>
                   )}
                 </div>
