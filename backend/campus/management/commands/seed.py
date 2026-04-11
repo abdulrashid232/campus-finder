@@ -23,20 +23,20 @@ class Command(BaseCommand):
 
         # 2. Buildings & Rooms
         b1, _ = Building.objects.get_or_create(
-            code='ENG',
+            code='ODU',
             defaults={
-                'name': 'Engineering Center',
-                'latitude': decimal.Decimal('37.774900'),
-                'longitude': decimal.Decimal('-122.419400'),
+                'name': 'Oduro Block',
+                'latitude': decimal.Decimal('4.9097171'),
+                'longitude': decimal.Decimal('-1.7563530'),
                 'image_url': 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&q=80'
             }
         )
         b2, _ = Building.objects.get_or_create(
-            code='SCI',
+            code='FOE',
             defaults={
-                'name': 'Science Building',
-                'latitude': decimal.Decimal('37.775000'),
-                'longitude': decimal.Decimal('-122.418000'),
+                'name': 'Faculty of Engineering',
+                'latitude': decimal.Decimal('4.9075520'),
+                'longitude': decimal.Decimal('-1.7555028'),
                 'image_url': 'https://images.unsplash.com/photo-1562774053-701939374585?w=800&q=80'
             }
         )
