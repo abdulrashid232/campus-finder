@@ -14,10 +14,12 @@ class RoomViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = RoomSerializer
     permission_classes = [AllowAny]
 
-class CourseViewSet(viewsets.ReadOnlyModelViewSet):
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 class SearchView(generics.ListAPIView):
     serializer_class = CourseSerializer

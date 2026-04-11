@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import apiClient from '../api/client';
-import { X, Save, Clock, MapPin, BookOpen } from 'lucide-react';
+import { X, Save, Clock, MapPin, BookOpen, PlusCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 export default function AddClassModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
@@ -12,6 +12,11 @@ export default function AddClassModal({ isOpen, onClose }: { isOpen: boolean, on
   const [day, setDay] = useState('0');
   const [start, setStart] = useState('09:00');
   const [end, setEnd] = useState('10:30');
+  
+  // New Course state
+  const [isNewCourse, setIsNewCourse] = useState(false);
+  const [newCourseCode, setNewCourseCode] = useState('');
+  const [newCourseName, setNewCourseName] = useState('');
 
   const { data: courses } = useQuery({
     queryKey: ['courses'],
@@ -28,6 +33,10 @@ export default function AddClassModal({ isOpen, onClose }: { isOpen: boolean, on
     onSuccess: () => {
       toast.success("Class added to timetable!");
       queryClient.invalidateQueries({ queryKey: ['timetable'] });
+      // Reset generic fields conditionally
+      setIsNewCourse(false);
+      setNewCourseCode('');
+      setNewCourseName('');
       onClose();
     },
     onError: (err) => {
@@ -35,12 +44,29 @@ export default function AddClassModal({ isOpen, onClose }: { isOpen: boolean, on
     }
   });
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!courseId) return toast.error("Please select a course");
+    
+    let finalCourseId = courseId;
+
+    if (isNewCourse) {
+      if (!newCourseCode || !newCourseName) return toast.error("Please fill course details");
+      try {
+        const res = await apiClient.post('courses/', {
+          course_code: newCourseCode.toUpperCase(),
+          name: newCourseName
+        });
+        finalCourseId = res.data.id;
+        queryClient.invalidateQueries({ queryKey: ['courses'] });
+      } catch (err: any) {
+        return toast.error(err.response?.data?.course_code?.[0] || "Failed to create new course");
+      }
+    } else {
+      if (!finalCourseId) return toast.error("Please select a course");
+    }
     
     mutation.mutate({
-      course: courseId,
+      course: finalCourseId,
       room: roomId || null,
       day_of_week: parseInt(day),
       start_time: start,
@@ -62,20 +88,50 @@ export default function AddClassModal({ isOpen, onClose }: { isOpen: boolean, on
         
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1 flex items-center gap-2">
-              <BookOpen size={16} /> Course
+            <label className="flex items-center justify-between text-sm font-medium text-slate-700 mb-2">
+              <span className="flex items-center gap-2"><BookOpen size={16} /> Course</span>
+              <button 
+                type="button" 
+                onClick={() => setIsNewCourse(!isNewCourse)}
+                className="text-brand-600 hover:text-brand-700 font-medium flex items-center gap-1 text-xs"
+              >
+                <PlusCircle size={14} />
+                {isNewCourse ? "Select Existing" : "Add New Course"}
+              </button>
             </label>
-            <select
-              value={courseId}
-              onChange={(e) => setCourseId(e.target.value)}
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none"
-              required
-            >
-              <option value="">Select a course...</option>
-              {courses?.map((c: any) => (
-                <option key={c.id} value={c.id}>{c.course_code} - {c.name}</option>
-              ))}
-            </select>
+            
+            {isNewCourse ? (
+              <div className="grid grid-cols-2 gap-3 mb-2">
+                <input
+                  type="text"
+                  placeholder="Code (e.g. CS101)"
+                  value={newCourseCode}
+                  onChange={(e) => setNewCourseCode(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none uppercase"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Course Name"
+                  value={newCourseName}
+                  onChange={(e) => setNewCourseName(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none"
+                  required
+                />
+              </div>
+            ) : (
+              <select
+                value={courseId}
+                onChange={(e) => setCourseId(e.target.value)}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none"
+                required={!isNewCourse}
+              >
+                <option value="">Select a course...</option>
+                {courses?.map((c: any) => (
+                  <option key={c.id} value={c.id}>{c.course_code} - {c.name}</option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div>
