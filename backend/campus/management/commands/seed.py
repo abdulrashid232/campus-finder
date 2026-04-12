@@ -12,7 +12,15 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write('Seeding data...')
         
-        # 1. Create a Test User
+        # 1. Create a Test User and Superuser
+        if not User.objects.filter(email='admin@example.com').exists():
+            User.objects.create_superuser(
+                username='admin',
+                email='admin@example.com',
+                password='adminpassword123'
+            )
+            self.stdout.write(self.style.SUCCESS('Created admin user: admin@example.com / adminpassword123'))
+
         if not User.objects.filter(email='test@example.com').exists():
             User.objects.create_user(
                 username='teststudent',
