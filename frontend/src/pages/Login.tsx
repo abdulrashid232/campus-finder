@@ -135,7 +135,7 @@ export default function Login() {
         </div>
         
         {isLogin && <div className="mt-8 pt-4 border-t border-slate-100 text-center text-xs text-slate-400">
-             Try <b>test@example.com</b> / <b>password123</b>
+             Login to <b> find your way around campus</b>
         </div>}
       </div>
     </div>
