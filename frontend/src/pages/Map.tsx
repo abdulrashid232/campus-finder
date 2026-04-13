@@ -90,14 +90,14 @@ export default function MapView() {
   return (
     <div className="h-full w-full relative">
       {!import.meta.env.VITE_GOOGLE_MAPS_API_KEY && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg font-medium text-sm">
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg font-medium text-sm w-11/12 md:w-auto text-center">
           Warning: Google Maps API key is missing. Map may not load properly.
         </div>
       )}
 
       {/* Floating Info Panel */}
       {selectedBuilding && (
-        <div className="absolute top-8 left-8 z-10 bg-white rounded-3xl p-6 shadow-2xl w-80 border border-slate-100">
+        <div className="absolute bottom-24 left-4 right-4 md:bottom-auto md:left-8 md:top-8 z-10 bg-white/95 backdrop-blur-md rounded-3xl p-6 shadow-2xl w-auto md:w-80 border border-slate-100/50 max-h-[60vh] overflow-y-auto">
           <div className="text-xs font-bold text-brand-500 uppercase tracking-widest mb-1">{selectedBuilding.code}</div>
           <h2 className="text-xl font-bold text-slate-900 leading-tight mb-2">{selectedBuilding.name}</h2>
           

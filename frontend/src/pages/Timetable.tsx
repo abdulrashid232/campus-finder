@@ -36,8 +36,8 @@ export default function Timetable() {
   });
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <header className="flex items-center justify-between mb-8">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto pb-24 md:pb-8">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Your Timetable</h1>
           <p className="text-slate-500 mt-2">Manage your weekly class schedule</p>

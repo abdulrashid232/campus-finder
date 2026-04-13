@@ -56,8 +56,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto space-y-8">
-      <header className="mb-10">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-8">
+      <header className="mb-8 md:mb-10">
         <h1 className="text-3xl font-bold text-slate-900">Good Morning! ☕</h1>
         <p className="text-slate-500 mt-2">Here is your campus overview for today.</p>
       </header>

@@ -69,9 +69,46 @@ const Layout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pb-20 md:pb-0 relative">
         <Outlet />
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex items-center justify-around pb-safe pt-2 px-2 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.name}
+              to={item.path}
+              className={`flex flex-col items-center gap-1 p-2 min-w-[64px] rounded-xl transition-all duration-200 ${
+                isActive 
+                  ? 'text-brand-500' 
+                  : 'text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <div className={`p-1.5 rounded-xl ${isActive ? 'bg-brand-50' : ''}`}>
+                <Icon size={24} className={isActive ? "text-brand-500 drop-shadow-sm" : ""} />
+              </div>
+              <span className={`text-[10px] font-medium tracking-wide ${isActive ? "text-brand-600" : "text-slate-500"}`}>
+                {item.name}
+              </span>
+            </Link>
+          );
+        })}
+        <button
+          onClick={handleLogout}
+          className="flex flex-col items-center gap-1 p-2 min-w-[64px] rounded-xl transition-all duration-200 text-slate-400 hover:text-red-500"
+        >
+          <div className="p-1.5 rounded-xl">
+            <LogOut size={24} />
+          </div>
+          <span className="text-[10px] font-medium tracking-wide text-slate-500">
+            Logout
+          </span>
+        </button>
+      </nav>
     </div>
   );
 };
