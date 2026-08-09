@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { Map, Calendar, Search, LogOut, Compass } from 'lucide-react';
+import ChatBot from './ChatBot';
 
 const Layout = () => {
   const { user, logout } = useAuthStore();
@@ -72,6 +73,9 @@ const Layout = () => {
       <main className="flex-1 overflow-y-auto pb-20 md:pb-0 relative">
         <Outlet />
       </main>
+
+      {/* Campus Assistant chatbot — visible on all pages */}
+      <ChatBot />
 
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex items-center justify-around pb-safe pt-2 px-2 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">

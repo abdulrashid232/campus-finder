@@ -27,7 +27,10 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'campus.apps.CampusConfig',
     'timetable.apps.TimetableConfig',
+    'chat.apps.ChatConfig',
 ]
+
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
