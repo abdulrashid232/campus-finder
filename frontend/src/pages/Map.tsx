@@ -136,13 +136,23 @@ function StepIcon({ type, modifier, size = 18 }: { type: string; modifier?: stri
   return <ArrowUp {...p} />;
 }
 
+// Room-specific pin (distinct from building markers)
+const roomIcon = L.divIcon({
+  className: '',
+  html: `<div style="width:22px;height:22px;background:#f59e0b;border:3px solid white;border-radius:50%;box-shadow:0 0 0 5px rgba(245,158,11,0.25)"></div>`,
+  iconSize: [22, 22],
+  iconAnchor: [11, 11],
+});
+
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function MapView() {
   const [params] = useSearchParams();
   const targetCode = params.get('target');
+  const roomId     = params.get('room');
 
   const [userLoc, setUserLoc]           = useState<[number, number] | null>(null);
   const [selectedBuilding, setSelectedBuilding] = useState<any>(null);
+  const [selectedRoom, setSelectedRoom] = useState<any>(null);
   const [routeData, setRouteData]       = useState<RouteData | null>(null);
   const [isLoadingRoute, setIsLoadingRoute] = useState(false);
   const [navigating, setNavigating]     = useState(false);
@@ -153,6 +163,13 @@ export default function MapView() {
   const { data: buildings } = useQuery({
     queryKey: ['buildings'],
     queryFn: async () => (await apiClient.get('buildings/')).data,
+  });
+
+  // Fetch room when ?room= param is present
+  const { data: roomData } = useQuery({
+    queryKey: ['room', roomId],
+    queryFn: async () => (await apiClient.get(`rooms/${roomId}/`)).data,
+    enabled: !!roomId,
   });
 
   // One-time fix on load
@@ -196,12 +213,22 @@ export default function MapView() {
     if (dist < 25) setCurrentStepIdx((i) => Math.min(i + 1, steps.length - 1));
   }, [userLoc, navigating, routeData, currentStepIdx]);
 
+  // Sync room data when it loads
+  useEffect(() => {
+    if (roomData) setSelectedRoom(roomData);
+  }, [roomData]);
+
   // Fetch route (with steps) from OSRM
+  // Destination: room's exact coords if available, otherwise building coords
   useEffect(() => {
     if (!userLoc || !selectedBuilding) { setRouteData(null); return; }
     const [lat1, lng1] = userLoc;
-    const lat2 = Number(selectedBuilding.latitude);
-    const lng2 = Number(selectedBuilding.longitude);
+    const lat2 = selectedRoom
+      ? Number(selectedRoom.effective_latitude)
+      : Number(selectedBuilding.latitude);
+    const lng2 = selectedRoom
+      ? Number(selectedRoom.effective_longitude)
+      : Number(selectedBuilding.longitude);
 
     setIsLoadingRoute(true);
     fetch(
@@ -236,9 +263,9 @@ export default function MapView() {
       })
       .catch(() => console.warn('OSRM routing failed'))
       .finally(() => setIsLoadingRoute(false));
-  }, [userLoc, selectedBuilding]);
+  }, [userLoc, selectedBuilding, selectedRoom]);
 
-  // Auto-select from URL param
+  // Auto-select building from URL param
   useEffect(() => {
     if (buildings && targetCode) {
       const target = buildings.find((b: any) => b.code === targetCode);
@@ -260,6 +287,7 @@ export default function MapView() {
   function clearSelection() {
     stopNavigation();
     setSelectedBuilding(null);
+    setSelectedRoom(null);
     setRouteData(null);
   }
 
@@ -356,10 +384,24 @@ export default function MapView() {
       {/* ═══ PREVIEW PANEL (building selected, not navigating) ══════════════ */}
       {!navigating && selectedBuilding && (
         <div className="absolute bottom-24 left-4 right-4 md:bottom-auto md:left-8 md:top-8 z-[1000] bg-white/95 backdrop-blur-md rounded-3xl p-6 shadow-2xl w-auto md:w-80 border border-slate-100/50 max-h-[65vh] overflow-y-auto">
-          <div className="text-xs font-bold text-brand-500 uppercase tracking-widest mb-1">{selectedBuilding.code}</div>
-          <h2 className="text-xl font-bold text-slate-900 leading-tight mb-3">{selectedBuilding.name}</h2>
+          {selectedRoom ? (
+            <>
+              <div className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-1">
+                {selectedBuilding.code} · Floor {selectedRoom.floor}
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 leading-tight mb-1">
+                Room {selectedRoom.room_number}
+              </h2>
+              <p className="text-sm text-slate-500 mb-3">{selectedBuilding.name}</p>
+            </>
+          ) : (
+            <>
+              <div className="text-xs font-bold text-brand-500 uppercase tracking-widest mb-1">{selectedBuilding.code}</div>
+              <h2 className="text-xl font-bold text-slate-900 leading-tight mb-3">{selectedBuilding.name}</h2>
+            </>
+          )}
 
-          {selectedBuilding.image_url && (
+          {!selectedRoom && selectedBuilding.image_url && (
             <img src={selectedBuilding.image_url} alt={selectedBuilding.name} className="w-full h-32 object-cover rounded-xl mb-4 bg-slate-100" />
           )}
 
@@ -451,10 +493,28 @@ export default function MapView() {
           <Marker
             key={b.id}
             position={[Number(b.latitude), Number(b.longitude)]}
-            icon={selectedBuilding?.id === b.id ? selectedBuildingIcon : buildingIcon}
-            eventHandlers={{ click: () => { if (!navigating) setSelectedBuilding(b); } }}
+            icon={selectedBuilding?.id === b.id && !selectedRoom ? selectedBuildingIcon : buildingIcon}
+            eventHandlers={{
+              click: () => {
+                if (!navigating) {
+                  setSelectedBuilding(b);
+                  setSelectedRoom(null);
+                }
+              },
+            }}
           />
         ))}
+
+        {/* Exact room pin (amber) — only when a specific room is targeted */}
+        {selectedRoom && (
+          <Marker
+            position={[
+              Number(selectedRoom.effective_latitude),
+              Number(selectedRoom.effective_longitude),
+            ]}
+            icon={roomIcon}
+          />
+        )}
 
         {/* Route polyline */}
         {routeData && (

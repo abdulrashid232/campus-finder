@@ -38,8 +38,8 @@ class SearchView(APIView):
             results.append({'type': 'building', 'id': f"b_{b.id}", 'title': b.name, 'subtitle': f"Building ({b.code})", 'target': b.code})
             
         # Match rooms
-        for r in Room.objects.filter(room_number__icontains=query)[:5]:
-            results.append({'type': 'room', 'id': f"r_{r.id}", 'title': f"Room {r.room_number}", 'subtitle': r.building.name, 'target': r.building.code})
+        for r in Room.objects.select_related('building').filter(room_number__icontains=query)[:5]:
+            results.append({'type': 'room', 'id': f"r_{r.id}", 'title': f"Room {r.room_number}", 'subtitle': r.building.name, 'target': r.building.code, 'room_id': r.id})
 
         # Match courses
         for c in Course.objects.filter(Q(course_code__icontains=query) | Q(name__icontains=query))[:10]:

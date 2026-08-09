@@ -8,7 +8,9 @@ class BuildingSerializer(serializers.ModelSerializer):
 
 class RoomSerializer(serializers.ModelSerializer):
     building = BuildingSerializer(read_only=True)
-    
+    effective_latitude = serializers.DecimalField(max_digits=9, decimal_places=6, read_only=True)
+    effective_longitude = serializers.DecimalField(max_digits=9, decimal_places=6, read_only=True)
+
     class Meta:
         model = Room
         fields = '__all__'

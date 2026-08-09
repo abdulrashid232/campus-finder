@@ -51,8 +51,11 @@ export default function Dashboard() {
 
   const nextClass = upcomingClasses && upcomingClasses.length > 0 ? upcomingClasses[0] : null;
 
-  const navigateToLocation = (buildingCode: string) => {
-    navigate(`/map?target=${buildingCode}`);
+  const navigateToLocation = (buildingCode: string, roomId?: number) => {
+    const url = roomId
+      ? `/map?target=${buildingCode}&room=${roomId}`
+      : `/map?target=${buildingCode}`;
+    navigate(url);
   };
 
   return (
@@ -88,7 +91,10 @@ export default function Dashboard() {
                     key={result.id} 
                     onClick={() => {
                       if (result.target) {
-                        navigate(`/map?target=${result.target}`);
+                        const url = result.room_id
+                          ? `/map?target=${result.target}&room=${result.room_id}`
+                          : `/map?target=${result.target}`;
+                        navigate(url);
                       } else {
                         navigate(`/timetable`);
                       }
@@ -145,8 +151,8 @@ export default function Dashboard() {
                   </p>
                 </div>
                 
-                <button 
-                  onClick={() => navigateToLocation(nextClass.room_detail.building.code)}
+                <button
+                  onClick={() => navigateToLocation(nextClass.room_detail.building.code, nextClass.room_detail.id)}
                   className="bg-white text-brand-600 px-6 py-4 rounded-xl font-bold flex items-center gap-3 hover:bg-slate-50 hover:shadow-lg transition-all active:scale-95 whitespace-nowrap"
                 >
                   <Navigation size={20} />

@@ -49,9 +49,32 @@ class Command(BaseCommand):
             }
         )
 
-        r1, _ = Room.objects.get_or_create(building=b1, room_number='101', defaults={'floor': 1})
-        r2, _ = Room.objects.get_or_create(building=b1, room_number='202', defaults={'floor': 2})
-        r3, _ = Room.objects.get_or_create(building=b2, room_number='105A', defaults={'floor': 1})
+        # Rooms have their own coordinates (specific entrance/door location)
+        # Small offsets from building center represent different room entrances
+        r1, _ = Room.objects.get_or_create(
+            building=b1, room_number='101',
+            defaults={
+                'floor': 1,
+                'latitude': decimal.Decimal('4.9097500'),   # north side entrance
+                'longitude': decimal.Decimal('-1.7563100'),
+            }
+        )
+        r2, _ = Room.objects.get_or_create(
+            building=b1, room_number='202',
+            defaults={
+                'floor': 2,
+                'latitude': decimal.Decimal('4.9096700'),   # south side entrance
+                'longitude': decimal.Decimal('-1.7563900'),
+            }
+        )
+        r3, _ = Room.objects.get_or_create(
+            building=b2, room_number='105A',
+            defaults={
+                'floor': 1,
+                'latitude': decimal.Decimal('4.9075900'),   # east wing entrance
+                'longitude': decimal.Decimal('-1.7554600'),
+            }
+        )
 
         # 3. Courses
         c1, _ = Course.objects.get_or_create(course_code='CS101', defaults={'name': 'Intro to Computer Science'})
