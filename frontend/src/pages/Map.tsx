@@ -272,6 +272,16 @@ export default function MapView() {
   return (
     <div className="h-full w-full relative">
 
+      {/* ═══ WATERMARK LOGO ═════════════════════════════════════════════════ */}
+      <div className="absolute bottom-8 right-3 z-[999] pointer-events-none select-none">
+        <div className="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm border border-white/60">
+          <div className="relative flex items-center justify-center">
+            <MapPin size={18} className="text-brand-500" strokeWidth={2.5} />
+          </div>
+          <span className="text-xs font-bold text-slate-700 tracking-wide">CampusFinder</span>
+        </div>
+      </div>
+
       {/* ═══ NAVIGATION BANNER (active navigation) ══════════════════════════ */}
       {navigating && routeData && currentStep && (
         <>
