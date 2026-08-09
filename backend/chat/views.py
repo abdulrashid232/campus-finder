@@ -2,7 +2,8 @@ import os
 import json
 from datetime import datetime
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -120,13 +121,23 @@ class ChatView(APIView):
 
         raw = ''
         try:
-            genai.configure(api_key=api_key)
-            model = genai.GenerativeModel(
-                model_name='gemini-1.5-flash',
-                system_instruction=system_prompt,
+            client = genai.Client(api_key=api_key)
+
+            # Build contents list from history + current message
+            contents = []
+            for turn in gemini_history:
+                contents.append(
+                    types.Content(role=turn['role'], parts=[types.Part(text=turn['parts'][0])])
+                )
+            contents.append(
+                types.Content(role='user', parts=[types.Part(text=user_message)])
             )
-            chat = model.start_chat(history=gemini_history)
-            response = chat.send_message(user_message)
+
+            response = client.models.generate_content(
+                model='gemini-2.0-flash',
+                config=types.GenerateContentConfig(system_instruction=system_prompt),
+                contents=contents,
+            )
             raw = response.text.strip()
 
             # Strip markdown code fences if Gemini wraps the JSON
