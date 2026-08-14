@@ -27,7 +27,10 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'campus.apps.CampusConfig',
     'timetable.apps.TimetableConfig',
+    'chat.apps.ChatConfig',
 ]
+
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -80,6 +83,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
