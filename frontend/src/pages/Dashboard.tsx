@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import apiClient from '../api/client';
 import { Search as SearchIcon, Navigation, MapPin, Clock, BookOpen, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import dashboardWatermark from '../assets/dashboard-watermark.png';
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,6 +61,13 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-6 md:space-y-8 pb-24 md:pb-8">
+      {/* ═══ WATERMARK ═══════════════════════════════════════════════════════ */}
+      <img
+        src={dashboardWatermark}
+        alt=""
+        className="fixed bottom-20 right-2 md:bottom-6 md:right-6 w-32 h-32 md:w-48 md:h-48 object-contain opacity-[0.07] grayscale pointer-events-none select-none z-0"
+      />
+
       <header className="mb-8 md:mb-10">
         <h1 className="text-3xl font-bold text-slate-900">Good Morning! ☕</h1>
         <p className="text-slate-500 mt-2">Here is your campus overview for today.</p>
