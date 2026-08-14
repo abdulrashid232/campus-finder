@@ -401,8 +401,8 @@ export default function MapView() {
             </>
           )}
 
-          {!selectedRoom && selectedBuilding.image_url && (
-            <img src={selectedBuilding.image_url} alt={selectedBuilding.name} className="w-full h-32 object-cover rounded-xl mb-4 bg-slate-100" />
+          {(selectedBuilding.image_absolute || selectedBuilding.image_url) && (
+            <img src={selectedBuilding.image_absolute || selectedBuilding.image_url} alt={selectedBuilding.name} className="w-full h-32 object-cover rounded-xl mb-4 bg-slate-100" />
           )}
 
           {/* Route summary */}
