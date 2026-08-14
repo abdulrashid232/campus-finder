@@ -12,6 +12,7 @@ const Login = React.lazy(() => import('./pages/Login'));
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const MapView = React.lazy(() => import('./pages/Map'));
 const Timetable = React.lazy(() => import('./pages/Timetable'));
+const Directory = React.lazy(() => import('./pages/Directory'));
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
               <Route path="map" element={<MapView />} />
+              <Route path="directory" element={<Directory />} />
               <Route path="timetable" element={<Timetable />} />
             </Route>
           </Routes>

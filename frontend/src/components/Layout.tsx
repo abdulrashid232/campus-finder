@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
-import { Map, Calendar, Search, LogOut, Compass } from 'lucide-react';
+import { Map, Calendar, Search, LogOut, Compass, Building2 } from 'lucide-react';
 import ChatBot from './ChatBot';
 
 const Layout = () => {
@@ -18,6 +18,7 @@ const Layout = () => {
     { name: 'Dashboard', path: '/', icon: Search },
     { name: 'Timetable', path: '/timetable', icon: Calendar },
     { name: 'Map', path: '/map', icon: Map },
+    { name: 'Directory', path: '/directory', icon: Building2 },
   ];
 
   return (
