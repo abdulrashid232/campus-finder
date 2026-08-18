@@ -76,15 +76,16 @@ export default function Timetable() {
                   
                   {entry.room_detail && (
                     <div className="mt-4 pt-4 border-t border-slate-50">
-                      <button 
+                      <button
                         onClick={() => navigate(`/map?target=${entry.room_detail.building.code}`)}
+                        title={`${entry.room_detail.building.name}, Room ${entry.room_detail.room_number}`}
                         className="w-full flex items-center justify-between gap-2 text-sm text-slate-600 hover:text-brand-600 hover:bg-brand-50 font-medium bg-slate-50 p-2 rounded-lg transition-colors group/btn"
                       >
-                       <div className="flex items-center gap-2">
-                        <MapPin size={16} className="text-brand-400 group-hover/btn:text-brand-600" />
-                        {entry.room_detail.building.code} {entry.room_detail.room_number}
+                       <div className="flex items-center gap-2 min-w-0">
+                        <MapPin size={16} className="text-brand-400 group-hover/btn:text-brand-600 shrink-0" />
+                        <span className="truncate">{entry.room_detail.building.code} {entry.room_detail.room_number}</span>
                        </div>
-                       <Navigation size={14} className="opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+                       <Navigation size={14} className="opacity-0 group-hover/btn:opacity-100 transition-opacity shrink-0" />
                       </button>
                     </div>
                   )}

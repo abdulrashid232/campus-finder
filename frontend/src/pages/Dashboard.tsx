@@ -155,17 +155,22 @@ export default function Dashboard() {
                     {nextClass.course_detail.course_code}
                   </h3>
                   <p className="text-brand-100 font-medium flex items-center gap-2 text-lg">
-                    <MapPin size={18} /> {nextClass.room_detail.building.name}, Room {nextClass.room_detail.room_number}
+                    <MapPin size={18} />
+                    {nextClass.room_detail
+                      ? `${nextClass.room_detail.building.name}, Room ${nextClass.room_detail.room_number}`
+                      : 'Room to be announced'}
                   </p>
                 </div>
-                
-                <button
-                  onClick={() => navigateToLocation(nextClass.room_detail.building.code, nextClass.room_detail.id)}
-                  className="bg-white text-brand-600 px-6 py-4 rounded-xl font-bold flex items-center gap-3 hover:bg-slate-50 hover:shadow-lg transition-all active:scale-95 whitespace-nowrap"
-                >
-                  <Navigation size={20} />
-                  Get Directions
-                </button>
+
+                {nextClass.room_detail && (
+                  <button
+                    onClick={() => navigateToLocation(nextClass.room_detail.building.code, nextClass.room_detail.id)}
+                    className="bg-white text-brand-600 px-6 py-4 rounded-xl font-bold flex items-center gap-3 hover:bg-slate-50 hover:shadow-lg transition-all active:scale-95 whitespace-nowrap"
+                  >
+                    <Navigation size={20} />
+                    Get Directions
+                  </button>
+                )}
               </div>
             </div>
           ) : (
